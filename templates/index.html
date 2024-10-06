@@ -136,6 +136,9 @@
                 // Scrolla il chatbox in basso dopo ogni nuovo messaggio
                 chatbox.scrollTop = chatbox.scrollHeight;
 
+                // Rerenderizza MathJax per visualizzare correttamente le formule
+                MathJax.typesetPromise();
+
             } catch (error) {
                 console.error("Errore nell'invio del messaggio:", error);
             }
