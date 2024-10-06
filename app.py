@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template, session
+from flask import Flask, request, jsonify, render_template
 import openai
 import os
 
@@ -10,6 +10,13 @@ app.secret_key = os.getenv('SECRET_KEY', 'your_default_secret_key')
 # Ottieni la chiave API di OpenAI dalle variabili d'ambiente
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
+# Supponiamo che tu abbia una lista di messaggi (storico della chat)
+chat_history = [
+    {"role": "user", "content": "Hello, how are you?"},
+    {"role": "assistant", "content": "I'm good, thank you! How can I assist you today?"}
+]
+
+
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -19,22 +26,19 @@ def chat():
     data = request.get_json()
     user_message = data.get('message')
 
-    # Se non c'è uno storico, inizializzalo
-    if 'chat_history' not in session:
-        session['chat_history'] = []
-
     # Aggiungi il messaggio dell'utente alla cronologia
-    session['chat_history'].append({"role": "user", "content": user_message})
+    chat_history.append({"role": "user", "content": user_message})
 
     # Richiesta al modello GPT-4 tramite OpenAI API
     try:
-        
         response = openai.chat.completions.create(
             model="gpt-4",  # Assicurati che il modello sia corretto
-            messages=session['chat_history']
+            messages=chat_history
         )
-        bot_reply = response.choices[0].message.content  # Corretto l'accesso alla risposta
-        session['chat_history'].append({"role": "assistant", "content": bot_reply})
+        
+    bot_reply = response.choices[0].message.content  # Corretto l'accesso alla risposta
+    # Aggiungi la risposta del bot alla cronologia
+    chat_history.append({"role": "assistant", "content": bot_reply})
 
     except Exception as e:
         bot_reply = f"Errore: {str(e)}"
