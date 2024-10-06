@@ -97,7 +97,7 @@
 
             // Ottieni la risposta del bot
             const data = await response.json();
-            chatbox.innerHTML += `<p><strong>Bot:</strong> ${data.reply}</p>`;
+            chatbox.innerHTML += `<p><strong>Collaboratore:</strong> ${data.reply}</p>`;
 
             // Ripulisci l'input dell'utente
             document.getElementById('user-input').value = '';
