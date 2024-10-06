@@ -23,7 +23,6 @@ def start_chat():
     return jsonify({"conversation_id": conversation_id})
 
 
-
 @app.route('/chat', methods=['POST'])
 def chat():
     data = request.get_json()
