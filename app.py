@@ -2,18 +2,16 @@ from flask import Flask, request, jsonify, render_template
 import openai
 import os
 
-app = Flask(__name__)
-
-
-# Ottieni la chiave API di OpenAI dalle variabili d'ambiente
-openai.api_key = os.getenv('OPENAI_API_KEY')
-
 # Supponiamo che tu abbia una lista di messaggi (storico della chat)
 chat_history = [
     {"role": "user", "content": "Hello, how are you?"},
     {"role": "assistant", "content": "I'm good, thank you! How can I assist you today?"}
 ]
 
+app = Flask(__name__)
+
+# Ottieni la chiave API di OpenAI dalle variabili d'ambiente
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
 @app.route('/')
 def home():
