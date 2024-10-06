@@ -42,11 +42,14 @@
             background-color: #000099;
         }
     </style>
+    <!-- Includi MathJax per il rendering delle formule matematiche -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
     <h1>Colloquia con il collaboratore</h1>
     <div id="chatbox">
-        <!-- Messaggi della chat appariranno qui -->
+        <!-- Messaggi della chat e formule matematiche appariranno qui -->
     </div>
     <input type="text" id="user-input" placeholder="Scrivi un messaggio...">
     <button onclick="sendMessage()">Invia</button>
@@ -66,7 +69,7 @@
                 body: JSON.stringify({message: message})
             });
 
-            // Ottieni la risposta del bot
+            // Ottieni la risposta del bot (che potrebbe contenere formule matematiche)
             const data = await response.json();
             chatbox.innerHTML += `<p><strong>Bot:</strong> ${data.reply}</p>`;
 
@@ -75,8 +78,12 @@
 
             // Scrolla il chatbox in basso dopo ogni nuovo messaggio
             chatbox.scrollTop = chatbox.scrollHeight;
+
+            // Rerenderizza MathJax per visualizzare correttamente le formule
+            MathJax.typesetPromise();
         }
     </script>
 </body>
 </html>
+
 
