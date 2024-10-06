@@ -28,11 +28,11 @@ def chat():
 
     # Richiesta al modello GPT-4 tramite OpenAI API
     try:
-        response = openai.ChatCompletion.create(
+        response = openai.char.completions.create(
             model="gpt-4",  # Assicurati che il modello sia corretto
             messages=session['chat_history']
         )
-        bot_reply = response.choices[0]['message']['content']  # Corretto l'accesso alla risposta
+        bot_reply = response.choices[0].message.content  # Corretto l'accesso alla risposta
         session['chat_history'].append({"role": "assistant", "content": bot_reply})
 
     except Exception as e:
