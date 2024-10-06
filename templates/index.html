@@ -5,7 +5,6 @@
     <title>Il Mio Collaboratore</title>
     <style>
         body {
-            /* Gradiente da blu a bianco */
             background: linear-gradient(to bottom, #0000ff, #ffffff);
             height: 100vh;
             margin: 0;
@@ -55,17 +54,29 @@
     <script>
         async function sendMessage() {
             const message = document.getElementById('user-input').value;
+            const chatbox = document.getElementById('chatbox');
+            
+            // Aggiungi subito il messaggio dell'utente
+            chatbox.innerHTML += `<p><strong>Tu:</strong> ${message}</p>`;
+
+            // Effettua la richiesta POST al server
             const response = await fetch('/chat', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({message: message})
             });
+
+            // Ottieni la risposta del bot
             const data = await response.json();
-            const chatbox = document.getElementById('chatbox');
-            chatbox.innerHTML += `<p><strong>Tu:</strong> ${message}</p>`;
             chatbox.innerHTML += `<p><strong>Bot:</strong> ${data.reply}</p>`;
+
+            // Ripulisci l'input dell'utente
             document.getElementById('user-input').value = '';
+
+            // Scrolla il chatbox in basso dopo ogni nuovo messaggio
+            chatbox.scrollTop = chatbox.scrollHeight;
         }
     </script>
 </body>
 </html>
+
