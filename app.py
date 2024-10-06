@@ -28,7 +28,8 @@ def chat():
 
     # Richiesta al modello GPT-4 tramite OpenAI API
     try:
-        response = openai.chat.completions.create(
+        
+        response = openai.ChatCompletion.create()(
             model="gpt-4",  # Assicurati che il modello sia corretto
             messages=session['chat_history']
         )
