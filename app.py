@@ -4,8 +4,6 @@ import os
 
 app = Flask(__name__)
 
-# Configura la chiave segreta per le sessioni
-app.secret_key = os.getenv('SECRET_KEY', 'your_default_secret_key')
 
 # Ottieni la chiave API di OpenAI dalle variabili d'ambiente
 openai.api_key = os.getenv('OPENAI_API_KEY')
