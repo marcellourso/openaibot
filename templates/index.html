@@ -42,7 +42,7 @@
             width: auto;
             max-width: 200px;
             display: block;
-            margin: 0 auto; /* Allinea il bottone al centro */
+            margin: 10px auto; /* Allinea il bottone al centro */
         }
 
         button:hover {
@@ -69,6 +69,10 @@
 </head>
 <body>
     <h1>Colloquia con il collaboratore</h1>
+
+    <!-- Bottone per iniziare una nuova conversazione -->
+    <button onclick="startChat()">Inizia Nuova Conversazione</button>
+
     <div id="chatbox">
         <!-- Messaggi della chat appariranno qui -->
     </div>
@@ -81,36 +85,65 @@
     </div>
 
     <script>
+        let conversationId = null;  // Variabile per salvare l'ID della conversazione
+
+        // Funzione per iniziare una nuova conversazione
+        async function startChat() {
+            try {
+                const response = await fetch('/start_chat', { method: 'POST' });
+                const data = await response.json();
+                conversationId = data.conversation_id;  // Salva l'ID della conversazione
+                document.getElementById('chatbox').innerHTML += '<p><strong>Conversazione avviata</strong></p>';
+                console.log("ID Conversazione:", conversationId);
+            } catch (error) {
+                console.error("Errore nell'iniziare la conversazione:", error);
+            }
+        }
+
+        // Funzione per inviare un messaggio
         async function sendMessage() {
             const message = document.getElementById('user-input').value;
             const chatbox = document.getElementById('chatbox');
             
-            // Aggiungi subito il messaggio dell'utente
+            if (!message) {
+                alert("Inserisci un messaggio!");
+                return;
+            }
+
+            if (!conversationId) {
+                alert("Devi prima iniziare una nuova conversazione!");
+                return;
+            }
+
+            // Aggiungi subito il messaggio dell'utente nel chatbox
             chatbox.innerHTML += `<p><strong>Tu:</strong> ${message}</p>`;
 
             // Effettua la richiesta POST al server
-            const response = await fetch('/chat', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({message: message})
-            });
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message, conversation_id: conversationId })
+                });
 
-            // Ottieni la risposta del bot
-            const data = await response.json();
-            chatbox.innerHTML += `<p><strong>Collaboratore:</strong> ${data.reply}</p>`;
+                const data = await response.json();
+                // Aggiungi la risposta del bot nel chatbox
+                chatbox.innerHTML += `<p><strong>Collaboratore:</strong> ${data.reply}</p>`;
+                
+                // Pulisci il campo di input
+                document.getElementById('user-input').value = '';
 
-            // Ripulisci l'input dell'utente
-            document.getElementById('user-input').value = '';
+                // Scrolla il chatbox in basso dopo ogni nuovo messaggio
+                chatbox.scrollTop = chatbox.scrollHeight;
 
-            // Scrolla il chatbox in basso dopo ogni nuovo messaggio
-            chatbox.scrollTop = chatbox.scrollHeight;
-
-            // Rerenderizza MathJax per visualizzare correttamente le formule
-            MathJax.typesetPromise();
+            } catch (error) {
+                console.error("Errore nell'invio del messaggio:", error);
+            }
         }
     </script>
 </body>
 </html>
+
 
 
 
